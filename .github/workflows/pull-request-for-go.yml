@@ -1,0 +1,37 @@
+name: Pull Request for Go
+
+on:
+  pull_request:
+    paths:
+      - '**.go'
+      - go.mod
+      - go.sum
+      - .github/workflows/pull-request-for-go.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: ./.github/actions/setup-go
+      - name: Test
+        run: go test ./...
+
+  golangci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: ./.github/actions/setup-go
+      - name: Lint
+        uses: golangci/golangci-lint-action@v6.0.1
+        with:
+          version: v1.59.1
+          args: -v ./...

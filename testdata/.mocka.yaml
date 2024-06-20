@@ -1,0 +1,7 @@
+packages:
+- github.com/karamaru-alpha/mocka/testdata:
+    all: true
+    # recursive: true
+- fmt:
+    interfaces:
+    - Stringer

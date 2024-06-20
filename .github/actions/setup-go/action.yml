@@ -1,0 +1,19 @@
+name: Setup Go
+description: Setup Go
+
+runs:
+  using: composite
+  steps:
+    - name: Get Go version
+      id: set-go-version
+      shell: bash
+      run: echo "version=$(grep -m 1 -o '[0-9]\+\.[0-9]\+\.[0-9]\+' go.mod)" >> $GITHUB_OUTPUT
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      id: setup-go
+      with:
+        go-version: ${{ steps.set-go-version.outputs.version }}
+    - name: Download Go modules
+      if: ${{ steps.setup-go.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: go mod download
